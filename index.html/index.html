@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dla Ciebie ❤️</title>
+  <style>
+    body {
+      background: linear-gradient(135deg, #2f2c3b, #5c3d7e, #e60073);
+      color: #f0d6e3;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 50px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #f8bbd0;
+    }
+
+    .serduszka {
+      font-size: 2em;
+      animation: serca 1s infinite alternate;
+    }
+
+    @keyframes serca {
+      from { transform: scale(1); }
+      to { transform: scale(1.2); color: #ffb6c1; }
+    }
+
+    .zdjecie {
+      width: 200px;
+      border-radius: 20px;
+      margin-top: 20px;
+      box-shadow: 0 0 15px #e60073aa;
+    }
+
+    .czas {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #f8bbd0;
+    }
+
+    button {
+      margin: 10px;
+      padding: 12px 24px;
+      font-size: 1em;
+      background-color: #e60073;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      box-shadow: 0 4px 8px #ff77b4aa;
+    }
+
+    button:hover {
+      background-color: #cc0052;
+    }
+
+    /* Muzyka */
+    #music-btn, #music-btn-left {
+      position: fixed;
+      bottom: 20px;
+      background-color: #e60073;
+      color: white;
+      border-radius: 50px;
+      padding: 12px 20px;
+      font-size: 1em;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+      z-index: 1000;
+    }
+
+    #music-btn { right: 20px; }
+    #music-btn-left { left: 20px; }
+
+    /* Serduszka */
+    .heart {
+      position: fixed;
+      top: -30px;
+      font-size: 24px;
+      animation: fall 3s linear forwards;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+
+    /* Konfetti */
+    .confetti {
+      position: fixed;
+      width: 10px;
+      height: 10px;
+      background-color: red;
+      opacity: 0.8;
+      z-index: 2000;
+      pointer-events: none;
+      animation: confetti-fall 3s linear forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Napis "Nowożeńcy" */
+    #nowozency {
+      position: fixed;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 4em;
+      color: #ffb6c1;
+      font-weight: bold;
+      z-index: 3000;
+      display: none;
+      text-shadow: 2px 2px 5px #4b2840;
+    }
+
+    /* Propozycja */
+    #proposal {
+      margin-top: 20px;
+      font-size: 1.5em;
+      color: #ffb6c1;
+      user-select: none;
+      transition: font-size 0.1s linear;
+    }
+
+    #proposal button {
+      margin: 0 15px;
+      font-size: 1.2em;
+      padding: 10px 25px;
+      border-radius: 12px;
+      background-color: #e60073;
+      color: white;
+      box-shadow: 0 4px 8px #ff77b4aa;
+      cursor: pointer;
+    }
+
+  </style>
+</head>
+<body>
+  <h1>Kocham Cię ❤️</h1>
+  <div class="serduszka">💖 💞 💓 💕</div>
+
+  <p class="czas" id="licznik"></p>
+
+  <img src="twoje_zdjecie.jpg" alt="My" class="zdjecie" />
+
+  <br />
+
+  <!-- Przyciski -->
+  <button id="btn-message">Kliknij, aby zobaczyć ukrytą wiadomość</button>
+  <button id="btn-question">Pytanko</button>
+  <button id="btn-kochasz">Kochasz mnie?</button>
+
+  <!-- Ukryta wiadomość -->
+  <div id="message" style="margin-top: 20px; font-size: 1.5em; color: #ffb6c1; display: none;">
+    Kocham Cię najbardziej na świecie! ❤️
+  </div>
+
+  <!-- Pytanie z odpowiedziami TAK/NIE -->
+  <div id="proposal" style="display:none;">
+    <p>Wyjdziesz za mnie? 💍</p>
+    <button id="btnYes">Tak</button>
+    <button id="btnNo">Nie</button>
+  </div>
+
+  <!-- Napis "Nowożeńcy" -->
+  <div id="nowozency">Nowożeńcy ❤️</div>
+
+  <!-- Muzyka -->
+  <audio id="audio" src="muzyka.mp3" loop></audio>
+  <audio id="audio2" src="paktofonika.mp3" loop></audio>
+  <audio id="weddingMusic" src="ślub.mp3"></audio>
+
+  <!-- Przycisk muzyki -->
+  <button id="music-btn">❤️ Twoja ulubiona muzyka</button>
+  <button id="music-btn-left">🎧 Moja ulubiona muzyka</button>
+
+  <script>
+    window.onload = function () {
+      // Licznik dni
+      const startDate = new Date(2025, 6, 1);
+      const today = new Date();
+      const diffTime = today - startDate;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      document.getElementById("licznik").textContent = "Jesteśmy razem już " + diffDays + " dni 💑";
+
+      // Wiadomość
+      document.getElementById("btn-message").onclick = () => {
+        document.getElementById("message").style.display = "block";
+      };
+
+      // Pytanko
+      const questionBtn = document.getElementById("btn-question");
+      const proposal = document.getElementById("proposal");
+      questionBtn.onclick = () => {
+        questionBtn.style.display = "none";
+        proposal.style.display = "block";
+        proposal.style.fontSize = "1.5em"; // początkowa wielkość
+      };
+
+      // Obsługa TAK
+      document.getElementById("btnYes").onclick = () => {
+        document.getElementById("nowozency").style.display = "block";
+        proposal.style.display = "none";
+        playConfetti();
+        playWeddingMusic();
+      };
+
+      // Obsługa NIE — zmniejszamy font-size aż znika i chowa
+      document.getElementById("btnNo").onclick = () => {
+        let fontSize = 24; // 1.5em ~ 24px
+        const shrinkInterval = setInterval(() => {
+          fontSize -= 1;
+          if (fontSize <= 0) {
+            clearInterval(shrinkInterval);
+            proposal.style.display = "none";
+          } else {
+            proposal.style.fontSize = fontSize + "px";
+          }
+        }, 50);
+      };
+
+      // Obsługa przycisku "Kochasz mnie?"
+      document.getElementById("btn-kochasz").onclick = () => {
+        const msg = document.createElement("p");
+        msg.textContent = "Kocham Cię! ❤️";
+        msg.style.color = "#ffb6c1";
+        msg.style.fontSize = "1.5em";
+        msg.style.marginTop = "20px";
+        document.body.appendChild(msg);
+        setTimeout(() => msg.remove(), 3000);
+      };
+
+      // Muzyka
+      const audio = document.getElementById("audio");
+      const audio2 = document.getElementById("audio2");
+      const weddingMusic = document.getElementById("weddingMusic");
+      const musicBtn = document.getElementById("music-btn");
+      const musicBtnLeft = document.getElementById("music-btn-left");
+
+      musicBtn.onclick = () => {
+        if (audio.paused) {
+          audio.play();
+          audio2.pause();
+          weddingMusic.pause();
+          musicBtn.textContent = "⏸️ Zatrzymaj muzykę";
+          musicBtnLeft.textContent = "🎧 Moja ulubiona muzyka";
+        } else {
+          audio.pause();
+          musicBtn.textContent = "❤️ Twoja ulubiona muzyka";
+        }
+      };
+
+      musicBtnLeft.onclick = () => {
+        if (audio2.paused) {
+          audio2.play();
+          audio.pause();
+          weddingMusic.pause();
+          musicBtnLeft.textContent = "⏸️ Zatrzymaj muzykę";
+          musicBtn.textContent = "❤️ Twoja ulubiona muzyka";
+        } else {
+          audio2.pause();
+          musicBtnLeft.textContent = "🎧 Moja ulubiona muzyka";
+        }
+      };
+
+      // Spadające serduszka
+      const heartColors = ["red", "deeppink", "orange", "violet", "crimson", "hotpink", "purple"];
+      setInterval(() => {
+        const heart = document.createElement("div");
+        heart.classList.add("heart");
+        heart.textContent = "❤️";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.color = heartColors[Math.floor(Math.random() * heartColors.length)];
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 3000);
+      }, 300);
+
+      // Funkcja efektu konfetti
+      function playConfetti() {
+        const colors = ["#e60073", "#ff77b4", "#f8bbd0", "#5c3d7e", "#2f2c3b"];
+        for (let i = 0; i < 100; i++) {
+          const confetti = document.createElement("div");
+          confetti.classList.add("confetti");
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.left = Math.random() * 100 + "vw";
+          confetti.style.top = Math.random() * 50 + "vh";
+          confetti.style.width = confetti.style.height = (5 + Math.random() * 5) + "px";
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 3000);
+        }
+      }
+
+      // Funkcja odtwarzania muzyki ślubnej
+      function playWeddingMusic() {
+        weddingMusic.play();
+        audio.pause();
+        audio2.pause();
+        musicBtn.textContent = "❤️ Twoja ulubiona muzyka";
+        musicBtnLeft.textContent = "🎧 Moja ulubiona muzyka";
+      }
+    };
+  </script>
+</body>
+</html>
