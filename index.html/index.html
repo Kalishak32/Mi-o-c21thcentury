@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dla Ciebie ❤️</title>
+  <style>
+    body {
+      background-color: #ffe6f0;
+      color: #333;
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      padding: 50px;
+      overflow-x: hidden;
+    }
+
+    h1 {
+      font-size: 3em;
+      color: #e60073;
+    }
+
+    .serduszka {
+      font-size: 2em;
+      animation: serca 1s infinite alternate;
+    }
+
+    @keyframes serca {
+      from {
+        transform: scale(1);
+      }
+      to {
+        transform: scale(1.2);
+        color: red;
+      }
+    }
+
+    .zdjecie {
+      width: 200px;
+      border-radius: 20px;
+      margin-top: 20px;
+    }
+
+    .czas {
+      margin-top: 20px;
+      font-size: 1.2em;
+    }
+
+    #btn-message, #btn-question, #btnYes, #btnNo, #kochamBtn, #music-btn, #music-btn-left {
+      margin: 10px;
+      padding: 12px 24px;
+      font-size: 1em;
+      background-color: #e60073;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    #btn-message:hover, #btn-question:hover, #btnYes:hover, #btnNo:hover, #kochamBtn:hover, #music-btn:hover, #music-btn-left:hover {
+      background-color: #cc0052;
+    }
+
+    #message, #proposal, #nowozency, #kochamMessage {
+      margin-top: 20px;
+      font-size: 1.5em;
+      color: #e60073;
+      display: none;
+    }
+
+    #music-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      font-size: 0.9em;
+      border-radius: 50%;
+      padding: 16px;
+      width: 60px;
+      height: 60px;
+    }
+
+    #music-btn-left {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      font-size: 0.9em;
+      border-radius: 50%;
+      padding: 16px;
+      width: 60px;
+      height: 60px;
+    }
+
+    .falling-heart {
+      position: fixed;
+      top: -2em;
+      font-size: 2em;
+      pointer-events: none;
+      animation: fallHeart linear forwards;
+      z-index: 1000;
+    }
+
+    @keyframes fallHeart {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+
+    .confetti {
+      position: fixed;
+      z-index: 9999;
+      border-radius: 50%;
+      animation-name: fallConfetti;
+      animation-timing-function: linear;
+      animation-iteration-count: 1;
+    }
+
+    @keyframes fallConfetti {
+      0% { transform: translateY(0); opacity: 1; }
+      100% { transform: translateY(100vh); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+  <h1>Kocham Cię ❤️</h1>
+  <div class="serduszka">💖 💞 💓 💕</div>
+  <p class="czas" id="licznik"></p>
+  <img src="twoje_zdjecie.jpg" alt="My" class="zdjecie" />
+  <br />
+  <button id="btn-message">Kliknij, aby zobaczyć ukrytą wiadomość</button>
+  <div id="message">Kocham Cię najbardziej na świecie! ❤️</div>
+  <br />
+  <button id="btn-question">Mam pytanie...</button>
+  <div id="proposal">
+    Czy wyjdziesz za mnie? <br />
+    <button id="btnYes">Tak</button>
+    <button id="btnNo">Nie</button>
+  </div>
+  <div id="nowozency">Witamy Młodą Parę! ✨</div>
+  <br />
+  <button id="kochamBtn">Kocham Cię</button>
+  <div id="kochamMessage"></div>
+  <button id="music-btn">❤️</button>
+  <button id="music-btn-left">🎵</button>
+  <audio id="audio" src="twoja_muzyka.mp3"></audio>
+  <audio id="audio2" src="moja_muzyka.mp3"></audio>
+  <audio id="weddingMusic" src="wedding_music.mp3"></audio>
+
+  <script>
+    window.onload = function () {
+      const startDate = new Date(2025, 6, 1);
+      const today = new Date();
+      const diffTime = today - startDate;
+      const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+      document.getElementById("licznik").textContent = "Jesteśmy razem już " + diffDays + " dni 💑";
+
+      document.getElementById("btn-message").onclick = () => {
+        const msg = document.getElementById("message");
+        msg.style.display = msg.style.display === "none" || msg.style.display === "" ? "block" : "none";
+      };
+
+      const questionBtn = document.getElementById("btn-question");
+      const proposal = document.getElementById("proposal");
+      questionBtn.onclick = () => {
+        questionBtn.style.display = "none";
+        proposal.style.display = "block";
+        proposal.style.fontSize = "1.5em";
+      };
+
+      document.getElementById("btnYes").onclick = () => {
+        document.getElementById("nowozency").style.display = "block";
+        proposal.style.display = "none";
+        playConfetti();
+        playWeddingMusic();
+      };
+
+      document.getElementById("btnNo").onclick = () => {
+        let fontSize = 24;
+        const shrinkInterval = setInterval(() => {
+          fontSize -= 1;
+          if (fontSize <= 0) {
+            clearInterval(shrinkInterval);
+            proposal.style.display = "none";
+          } else {
+            proposal.style.fontSize = fontSize + "px";
+          }
+        }, 50);
+      };
+
+      const kochamBtn = document.getElementById("kochamBtn");
+      const kochamMessage = document.getElementById("kochamMessage");
+      const teksty = ["Czy na pewno?", "Na pewno kochasz?", "Naprawdę?", "Nie żartujesz?"];
+      let klikniecia = 0;
+
+      kochamBtn.onclick = () => {
+        if (klikniecia < 4) {
+          kochamMessage.textContent = teksty[klikniecia];
+          const maxX = window.innerWidth - kochamBtn.offsetWidth - 20;
+          const maxY = window.innerHeight - kochamBtn.offsetHeight - 100;
+          kochamBtn.style.position = "fixed";
+          kochamBtn.style.left = Math.random() * maxX + "px";
+          kochamBtn.style.top = Math.random() * maxY + "px";
+          klikniecia++;
+        } else {
+          kochamMessage.textContent = "";
+          kochamBtn.textContent = "Wiedziałem, że mnie kochasz 😊";
+          kochamBtn.disabled = true;
+          kochamBtn.style.left = "50%";
+          kochamBtn.style.bottom = "30px";
+          kochamBtn.style.top = "auto";
+          kochamBtn.style.transform = "translateX(-50%)";
+        }
+      };
+
+      const audio = document.getElementById("audio");
+      const audio2 = document.getElementById("audio2");
+      const weddingMusic = document.getElementById("weddingMusic");
+      const musicBtn = document.getElementById("music-btn");
+      const musicBtnLeft = document.getElementById("music-btn-left");
+
+      musicBtn.onclick = () => {
+        if (audio.paused) {
+          audio.play();
+          audio2.pause();
+          weddingMusic.pause();
+          musicBtn.textContent = "⏸️";
+          musicBtnLeft.textContent = "🎵";
+        } else {
+          audio.pause();
+          musicBtn.textContent = "❤️";
+        }
+      };
+
+      musicBtnLeft.onclick = () => {
+        if (audio2.paused) {
+          audio2.play();
+          audio.pause();
+          weddingMusic.pause();
+          musicBtnLeft.textContent = "⏸️";
+          musicBtn.textContent = "❤️";
+        } else {
+          audio2.pause();
+          musicBtnLeft.textContent = "🎵";
+        }
+      };
+
+      function createFallingHeart() {
+        const heart = document.createElement("div");
+        heart.className = "falling-heart";
+        heart.textContent = "💖";
+        heart.style.left = Math.random() * 100 + "vw";
+        heart.style.animationDuration = 4 + Math.random() * 3 + "s";
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 7000);
+      }
+      setInterval(createFallingHeart, 500);
+
+      function playConfetti() {
+        const colors = ['#ff0a54', '#ff477e', '#ff85a1', '#fbb1b1', '#f9bec7', '#f7cad0'];
+        for(let i = 0; i < 100; i++) {
+          const confetti = document.createElement('div');
+          confetti.classList.add('confetti');
+          confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+          confetti.style.left = Math.random() * window.innerWidth + 'px';
+          confetti.style.top = '-10px';
+          confetti.style.width = confetti.style.height = (5 + Math.random() * 5) + 'px';
+          confetti.style.animationDuration = (2 + Math.random() * 3) + 's';
+          document.body.appendChild(confetti);
+          setTimeout(() => confetti.remove(), 5000);
+        }
+      }
+
+      function playWeddingMusic() {
+        weddingMusic.play();
+        audio.pause();
+        audio2.pause();
+        musicBtn.textContent = "❤️";
+        musicBtnLeft.textContent = "🎵";
+      }
+    };
+  </script>
+</body>
+</html>
